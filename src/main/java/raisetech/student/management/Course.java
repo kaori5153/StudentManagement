@@ -1,6 +1,7 @@
 package raisetech.student.management;
 
 
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,10 +9,11 @@ import lombok.Setter;
 @Setter
 public class Course {
 
-  private String courseID;
-  private String studentID;
+  private String crs_id;
+  private String st_id;
   private String course;
-  private String startDate;
-  private String endDate;
+  private String start_date;
+  private String end_date;
 
 }
+
