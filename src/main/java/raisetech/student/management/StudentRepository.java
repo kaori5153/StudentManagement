@@ -1,24 +1,24 @@
 package raisetech.student.management;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface StudentRepository {
 
-  @Select("SELECT * FROM student WHERE name = #{name}")
-  Student searchByName(String name);
+  @Select("SELECT * FROM students")
+  List<Student> searchStudent();
 
-  @Insert("INSERT student values(#{name}, #{age})")
-  void resisterStudent(String name, int age);
-
-  @Update("UPDATE student SET age = #{age} WHERE name = #{name}")
-  void updateStudent(String name, int age);
-
-  @Delete("DELETE FROM student WHERE name = #{name}")
-  void deleteStudent(String name);
-
+  @Select("SELECT * FROM students_courses")
+  @Results({
+      @Result(property = "crs_id", column = "crs_id"),
+      @Result(property = "st_id", column = "st_id"),
+      @Result(property = "course", column = "course"),
+      @Result(property = "start_date", column = "start_date"),
+      @Result(property = "end_date", column = "end_date")
+  })
+  List<StudentsCourses> searchStudentsCourses();
 }
