@@ -25,8 +25,8 @@ public class Application {
   }
 
   //  受講コース情報を表示する
-  @GetMapping("/studentCourseList")
-  public List<Course> getStudentCourseList() {
-    return repository.searchCourse();
+  @GetMapping("/studentsCourseList")
+  public List<StudentsCourses> getStudentsCourseList() {
+    return repository.searchStudentsCourses();
   }
 }

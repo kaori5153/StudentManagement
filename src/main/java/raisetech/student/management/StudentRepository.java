@@ -20,5 +20,5 @@ public interface StudentRepository {
       @Result(property = "start_date", column = "start_date"),
       @Result(property = "end_date", column = "end_date")
   })
-  List<Course> searchCourse();
+  List<StudentsCourses> searchStudentsCourses();
 }
