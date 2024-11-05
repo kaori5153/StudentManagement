@@ -1,5 +1,6 @@
 package raisetech.student.management.service;
 
+import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,31 @@ public class StudentService {
     this.repository = repository;
   }
 
-  public List<Student> searchStudentList(){
-    return repository.searchStudent();
+  public List<Student> searchStudentList() {
+    List<Student> searchStudentResult = repository.searchStudent();
+    Iterator<Student> iterator = searchStudentResult.iterator();
+    while (iterator.hasNext()) {
+      Student student = iterator.next();
+      if (student.getAge() < 30 || student.getAge() >= 40) {
+        iterator.remove();
+      }
+    }
+    return searchStudentResult;
   }
 
-  public List<StudentsCourses> searchStudentsCourseList(){
-    return repository.searchStudentsCourses();
+  public List<StudentsCourses> searchStudentsCourseList() {
+    int debug = 0;
+    List<StudentsCourses> searchCourseResult = repository.searchStudentsCourses();
+    Iterator<StudentsCourses> iterator = searchCourseResult.iterator();
+    while (iterator.hasNext()) {
+      StudentsCourses studentsCourses = iterator.next();
+      if (studentsCourses.getCourse() == "Java") {
+        debug++;
+      } else {
+        iterator.remove();
+      }
+    }
+    return searchCourseResult;
+
   }
 }
