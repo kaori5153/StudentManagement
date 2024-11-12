@@ -31,13 +31,12 @@ public class StudentService {
   }
 
   public List<StudentsCourses> searchStudentsCourseList() {
-    int debug = 0;
+    String searchCourse = "Java";
     List<StudentsCourses> searchCourseResult = repository.searchStudentsCourses();
     Iterator<StudentsCourses> iterator = searchCourseResult.iterator();
     while (iterator.hasNext()) {
       StudentsCourses studentsCourses = iterator.next();
-      if (studentsCourses.getCourse() == "Java") {
-        debug++;
+      if (searchCourse.equals(studentsCourses.getCourse())) {
       } else {
         iterator.remove();
       }
