@@ -12,32 +12,45 @@ import raisetech.student.management.repository.StudentRepository;
 public class StudentService {
 
   private StudentRepository repository;
+  private int targetAge;
+
 
   @Autowired
   public StudentService(StudentRepository repository) {
     this.repository = repository;
   }
 
-  public List<Student> searchStudentList() {
+  public List<Student> searchStudentList(String age) {
+    switch (age) {
+      case "10s" -> targetAge = 10;
+      case "20s" -> targetAge = 20;
+      case "30s" -> targetAge = 30;
+      case "40s" -> targetAge = 40;
+      case "50s" -> targetAge = 50;
+      case "60s" -> targetAge = 60;
+      default -> targetAge = 70;
+    }
     List<Student> searchStudentResult = repository.searchStudent();
     Iterator<Student> iterator = searchStudentResult.iterator();
     while (iterator.hasNext()) {
       Student student = iterator.next();
-      if (student.getAge() < 30 || student.getAge() >= 40) {
+      if (targetAge == 70) {
+        if (student.getAge() < targetAge) {
+          iterator.remove();
+        }
+      } else if (student.getAge() < targetAge || student.getAge() >= (targetAge + 10)) {
         iterator.remove();
       }
     }
     return searchStudentResult;
   }
 
-  public List<StudentsCourses> searchStudentsCourseList() {
-    String searchCourse = "Java";
+  public List<StudentsCourses> searchStudentsCourseList(String searchCourse) {
     List<StudentsCourses> searchCourseResult = repository.searchStudentsCourses();
     Iterator<StudentsCourses> iterator = searchCourseResult.iterator();
     while (iterator.hasNext()) {
       StudentsCourses studentsCourses = iterator.next();
-      if (searchCourse.equals(studentsCourses.getCourse())) {
-      } else {
+      if (!searchCourse.equals(studentsCourses.getCourse())) {
         iterator.remove();
       }
     }
