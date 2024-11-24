@@ -25,9 +25,10 @@ public class StudentController {
 
   //	生徒情報を表示する
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList(@RequestParam String age,String course) {
+  public List<StudentDetail> getStudentList(@RequestParam String age, String course) {
     List<Student> students = service.searchStudentList(age);
     List<StudentsCourses> studentsCourses = service.searchStudentsCourseList(course);
+
     return converter.convertStudentDetails(students, studentsCourses);
   }
 

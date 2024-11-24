@@ -23,7 +23,12 @@ public class StudentConverter {
           convertStudentCourses.add(StudentCourse);
         }
       }
-      studentDetail.setStudentsCourses(convertStudentCourses);
+      if (convertStudentCourses.isEmpty()) {
+        List<StudentsCourses> errorStudentCourse = new ArrayList<>();
+        studentDetail.setStudentsCourses(errorStudentCourse);
+      } else {
+        studentDetail.setStudentsCourses(convertStudentCourses);
+      }
       studentDetails.add(studentDetail);
     }
     return studentDetails;
