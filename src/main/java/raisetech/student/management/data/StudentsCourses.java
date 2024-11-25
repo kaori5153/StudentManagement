@@ -4,7 +4,6 @@ package raisetech.student.management.data;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.expression.spel.ast.NullLiteral;
 
 @Getter
 @Setter

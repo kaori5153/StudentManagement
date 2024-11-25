@@ -28,7 +28,6 @@ public class StudentController {
   public List<StudentDetail> getStudentList(@RequestParam String age, String course) {
     List<Student> students = service.searchStudentList(age);
     List<StudentsCourses> studentsCourses = service.searchStudentsCourseList(course);
-
     return converter.convertStudentDetails(students, studentsCourses);
   }
 
