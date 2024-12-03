@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 public class ErrorStudentsCourse {
 
-  private String courseId = "0";
-  private String studentId = "0";
-  private String course = "0";
-  private LocalDate startDate = null;
-  private LocalDate endDate = null;
+  private String courseId;
+  private String studentId;
+  private String course;
+  private LocalDate startDate;
+  private LocalDate endDate;
 
 }
