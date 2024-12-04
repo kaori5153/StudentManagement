@@ -10,7 +10,7 @@ import raisetech.student.management.data.StudentsCourses;
 
 /**
  * 受講生情報を扱うリポジトリ。
- *
+ * <p>
  * 全体検索や単一条件での検索、コース情報の検索が行えるクラスです。
  */
 @Mapper
@@ -18,6 +18,7 @@ public interface StudentRepository {
 
   /**
    * 生徒情報を全件検索します。
+   *
    * @return 全件検索した受講生情報の一覧
    */
   @Select("SELECT * FROM students")
@@ -25,6 +26,7 @@ public interface StudentRepository {
 
   /**
    * 受講生のコース情報を全件検索します。
+   *
    * @return 全件検索した受講コース情報の一覧
    */
   @Select("SELECT * FROM students_courses")
@@ -33,7 +35,9 @@ public interface StudentRepository {
       @Result(property = "st_id", column = "st_id"),
       @Result(property = "course", column = "course"),
       @Result(property = "start_date", column = "start_date"),
-      @Result(property = "end_date", column = "end_date")
+      @Result(property = "end_date", column = "end_date"),
+      @Result(property = "remark", column = "remark"),
+      @Result(property = "isDeleted", column = "isDeleted")
   })
   List<StudentsCourses> searchStudentsCourses();
 }
