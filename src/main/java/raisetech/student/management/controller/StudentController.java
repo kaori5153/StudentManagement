@@ -2,16 +2,16 @@ package raisetech.student.management.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import raisetech.student.management.controller.converter.StudentConverter;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
-import raisetech.student.management.domain.StudentDetail;
 import raisetech.student.management.service.StudentService;
 
-@RestController
+@Controller
 public class StudentController {
 
   private StudentService service;
@@ -25,16 +25,19 @@ public class StudentController {
 
   //	生徒情報を表示する
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList(@RequestParam String age, String course) {
-    List<Student> students = service.searchStudentList(age);
-    List<StudentsCourses> studentsCourses = service.searchStudentsCourseList(course);
-    return converter.convertStudentDetails(students, studentsCourses);
+  public String getStudentList(Model model) {
+    List<Student> students = service.searchStudentList();
+    List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
+//attributeNameは<tr th:each="studentDetail : ${studentList}">より
+    model.addAttribute("studentList",converter.convertStudentDetails(students, studentsCourses));
+//templates名
+    return "studentList";
   }
 
   //  受講コース情報を表示する
   @GetMapping("/studentsCourseList")
   public List<StudentsCourses> getStudentsCourseList(@RequestParam String course) {
-    return service.searchStudentsCourseList(course);
+    return service.searchStudentsCourseList();
   }
 
 }

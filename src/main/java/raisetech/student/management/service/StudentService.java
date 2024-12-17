@@ -20,39 +20,20 @@ public class StudentService {
     this.repository = repository;
   }
 
-  public List<Student> searchStudentList(String age) {
-    switch (age) {
-      case "10s" -> targetAge = 10;
-      case "20s" -> targetAge = 20;
-      case "30s" -> targetAge = 30;
-      case "40s" -> targetAge = 40;
-      case "50s" -> targetAge = 50;
-      case "60s" -> targetAge = 60;
-      default -> targetAge = 70;
-    }
+  public List<Student> searchStudentList() {
     List<Student> searchStudentResult = repository.searchStudent();
-    Iterator<Student> iterator = searchStudentResult.iterator();
-    while (iterator.hasNext()) {
-      Student student = iterator.next();
-      if (targetAge == 70) {
-        if (student.getAge() < targetAge) {
-          iterator.remove();
-        }
-      } else if (student.getAge() < targetAge || student.getAge() >= (targetAge + 10)) {
-        iterator.remove();
-      }
-    }
+//    Iterator<Student> iterator = searchStudentResult.iterator();
+//    while (iterator.hasNext()) {
+//      Student student = iterator.next();
+//    }
     return searchStudentResult;
   }
 
-  public List<StudentsCourses> searchStudentsCourseList(String searchCourse) {
+  public List<StudentsCourses> searchStudentsCourseList() {
     List<StudentsCourses> searchCourseResult = repository.searchStudentsCourses();
     Iterator<StudentsCourses> iterator = searchCourseResult.iterator();
     while (iterator.hasNext()) {
       StudentsCourses studentsCourses = iterator.next();
-      if (!searchCourse.equals(studentsCourses.getCourse())) {
-        iterator.remove();
-      }
     }
     return searchCourseResult;
 
