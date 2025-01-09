@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import raisetech.student.management.controller.converter.StudentConverter;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
@@ -32,31 +31,51 @@ public class StudentController {
   public String getStudentList(Model model) {
     List<Student> students = service.searchStudentList();
     List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
-//attributeNameは<tr th:each="studentDetail : ${studentList}">より
     model.addAttribute("studentList",converter.convertStudentDetails(students, studentsCourses));
-//templates名
     return "studentList";
   }
 
   //  受講コース情報を表示する
   @GetMapping("/studentsCourseList")
-  public List<StudentsCourses> getStudentsCourseList(@RequestParam String course) {
-    return service.searchStudentsCourseList();
+  public String getStudentsCourseList(Model model) {
+    List<Student> students = service.searchStudentList();
+    List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
+    model.addAttribute("studentCourseList", studentsCourses);
+    return "studentCourseList";
   }
 
+  //  新しい生徒情報の登録
   @GetMapping("/newStudent")
-  public String newStudent(Model model){
+  public String newStudent(Model model) {
     model.addAttribute("studentDetail", new StudentDetail());
     return "resisterStudent";
   }
 
   @PostMapping("/resisterStudent")
-  public String resisterStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result){
-    if(result.hasErrors()){
+  public String resisterStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    if (result.hasErrors()) {
       return "resisterStudent";
     }
-    System.out.println(studentDetail.getStudent().getName() + "さんが新規受講生としてとうろくされました");
-    return "redirect:/studentList";
+    service.resisterStudent(studentDetail.getStudent());
+    System.out.println(studentDetail.getStudent().getName());
+    return "redirect:/newStudentCourse";
   }
 
+  //  コース情報の登録
+  @GetMapping("/newStudentCourse")
+  public String newStudentCourse(@ModelAttribute("studentDetail") StudentDetail studentDetail,
+      Model model) {
+    model.addAttribute("studentDetail", studentDetail);
+    return "resisterCourse";
+  }
+
+  @PostMapping("/resisterCourse")
+  public String resisterCourse(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    if (result.hasErrors()) {
+      result.getAllErrors().forEach(error -> System.out.println(error.toString()));
+      return "resisterStudent";
+    }
+    service.resisterCourse(studentDetail.getStudentsCourses());
+    return "redirect:/studentList";
+  }
 }
