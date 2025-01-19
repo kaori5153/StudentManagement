@@ -31,7 +31,7 @@ public class StudentController {
   public String getStudentList(Model model) {
     List<Student> students = service.searchStudentList();
     List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
-    model.addAttribute("studentList",converter.convertStudentDetails(students, studentsCourses));
+    model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
     return "studentList";
   }
 
@@ -48,16 +48,16 @@ public class StudentController {
   @GetMapping("/newStudent")
   public String newStudent(Model model) {
     model.addAttribute("studentDetail", new StudentDetail());
-    return "resisterStudent";
+    return "registerStudent";
   }
 
-  @PostMapping("/resisterStudent")
-  public String resisterStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+  @PostMapping("/registerStudent")
+  public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
     if (result.hasErrors()) {
-      return "resisterStudent";
+      result.getAllErrors().forEach(error -> System.out.println(error.toString()));
+      return "registerStudent";
     }
-    service.resisterStudent(studentDetail.getStudent());
-    System.out.println(studentDetail.getStudent().getName());
+    service.registerStudent(studentDetail.getStudent());
     return "redirect:/newStudentCourse";
   }
 
@@ -66,16 +66,16 @@ public class StudentController {
   public String newStudentCourse(@ModelAttribute("studentDetail") StudentDetail studentDetail,
       Model model) {
     model.addAttribute("studentDetail", studentDetail);
-    return "resisterCourse";
+    return "registerCourse";
   }
 
-  @PostMapping("/resisterCourse")
-  public String resisterCourse(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+  @PostMapping("/registerCourse")
+  public String registerCourse(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
     if (result.hasErrors()) {
       result.getAllErrors().forEach(error -> System.out.println(error.toString()));
-      return "resisterStudent";
+      return "registerStudent";
     }
-    service.resisterCourse(studentDetail.getStudentsCourses());
+    service.registerCourse(studentDetail.getStudentsCourses());
     return "redirect:/studentList";
   }
 }

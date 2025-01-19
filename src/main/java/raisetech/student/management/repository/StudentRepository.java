@@ -1,10 +1,8 @@
 package raisetech.student.management.repository;
 
-import java.time.LocalDate;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -45,7 +43,16 @@ public interface StudentRepository {
   List<StudentsCourses> searchStudentsCourses();
 
   /**
+   * 新規登録した生徒idを検索します。
+   *
+   * @return 新規登録した生徒id
+   */
+  @Select("SELECT max(id) FROM students")
+  int newStudentId();
+
+  /**
    * 新規受講生の情報を登録します。
+   *
    * @param newStudentId：新規受講生のID
    * @param newStudentName：新規受講生の名前
    * @param newStudentFurigana：新規受講生の名前のフリガナ
@@ -72,7 +79,7 @@ public interface StudentRepository {
       + "#{newStudentArea}, "
       + "#{newStudentAge}, "
       + "#{newStudentGender})")
-  void resisterNewStudent(String newStudentId, String newStudentName, String newStudentFurigana,
+  void registerNewStudent(int newStudentId, String newStudentName, String newStudentFurigana,
       String newStudentNickName, String newStudentEmail, String newStudentArea, int newStudentAge,
       String newStudentGender);
 
@@ -83,6 +90,6 @@ public interface StudentRepository {
       + "(#{newStudentCourseId}, "
       + "#{newStudentId}, "
       + "#{newStudentCourse})")
-  void resisterNewCourse(String newStudentCourseId, String newStudentId, String newStudentCourse);
+  void registerNewCourse(int newStudentCourseId, int newStudentId, String newStudentCourse);
 
 }
