@@ -19,7 +19,7 @@ public class StudentConverter {
 
       List<StudentsCourses> convertStudentCourses = new ArrayList<>();
       for (StudentsCourses StudentCourse : studentsCourses) {
-        if (student.getId() == StudentCourse.getSt_id()) {
+        if (student.getId() == StudentCourse.getStudentId()) {
           convertStudentCourses.add(StudentCourse);
         }
       }

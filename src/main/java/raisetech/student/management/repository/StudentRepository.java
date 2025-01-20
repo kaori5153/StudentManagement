@@ -32,11 +32,11 @@ public interface StudentRepository {
    */
   @Select("SELECT * FROM students_courses")
   @Results({
-      @Result(property = "crs_id", column = "crs_id"),
-      @Result(property = "st_id", column = "st_id"),
+      @Result(property = "courseId", column = "crs_id"),
+      @Result(property = "studentId", column = "st_id"),
       @Result(property = "course", column = "course"),
-      @Result(property = "start_date", column = "start_date"),
-      @Result(property = "end_date", column = "end_date"),
+      @Result(property = "startDate", column = "start_date"),
+      @Result(property = "endDate", column = "end_date"),
       @Result(property = "remark", column = "remark"),
       @Result(property = "isDeleted", column = "isDeleted")
   })
