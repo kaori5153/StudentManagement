@@ -1,6 +1,5 @@
 package raisetech.student.management.service;
 
-import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import raisetech.student.management.repository.StudentRepository;
 public class StudentService {
 
   private StudentRepository repository;
-  private int targetAge;
 
 
   @Autowired
@@ -22,20 +20,22 @@ public class StudentService {
 
   public List<Student> searchStudentList() {
     List<Student> searchStudentResult = repository.searchStudent();
-//    Iterator<Student> iterator = searchStudentResult.iterator();
-//    while (iterator.hasNext()) {
-//      Student student = iterator.next();
-//    }
     return searchStudentResult;
   }
 
   public List<StudentsCourses> searchStudentsCourseList() {
     List<StudentsCourses> searchCourseResult = repository.searchStudentsCourses();
-    Iterator<StudentsCourses> iterator = searchCourseResult.iterator();
-    while (iterator.hasNext()) {
-      StudentsCourses studentsCourses = iterator.next();
-    }
     return searchCourseResult;
+  }
 
+  public void registerStudent(Student newStudent) {
+    repository.registerNewStudent(0, newStudent.getName(), newStudent.getFurigana(),
+        newStudent.getNickname(), newStudent.getEmail(), newStudent.getArea(), newStudent.getAge(),
+        newStudent.getGender());
+  }
+
+  public void registerCourse(List<StudentsCourses> newStudentCourse) {
+    repository.registerNewCourse(0, repository.newStudentId(),
+        newStudentCourse.getLast().getCourse());
   }
 }

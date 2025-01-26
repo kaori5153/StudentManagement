@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>受講コース登録</title>
+</head>
+<body>
+<h1>受講コース登録</h1>
+<form th:action="@{/registerCourse}" th:object="${studentDetail}" method="post">
+
+  <div>
+    <label for="course">コース:</label>
+    <input type="text" id="course" th:field="*{studentsCourses[2].course}" required />
+  </div>
+
+  <div>
+    <button type="submit">登録</button>
+  </div>
+
+</form>
+</body>
+</html>

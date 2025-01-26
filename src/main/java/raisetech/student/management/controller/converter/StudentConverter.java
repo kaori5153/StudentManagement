@@ -19,16 +19,11 @@ public class StudentConverter {
 
       List<StudentsCourses> convertStudentCourses = new ArrayList<>();
       for (StudentsCourses StudentCourse : studentsCourses) {
-        if (student.getId().equals(StudentCourse.getSt_id())) {
+        if (student.getId() == StudentCourse.getStudentId()) {
           convertStudentCourses.add(StudentCourse);
         }
       }
-      if (convertStudentCourses.isEmpty()) {
-        List<StudentsCourses> errorStudentCourse = new ArrayList<>();
-        studentDetail.setStudentsCourses(errorStudentCourse);
-      } else {
         studentDetail.setStudentsCourses(convertStudentCourses);
-      }
       studentDetails.add(studentDetail);
     }
     return studentDetails;

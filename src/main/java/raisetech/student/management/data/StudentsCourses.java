@@ -9,11 +9,11 @@ import lombok.Setter;
 @Setter
 public class StudentsCourses {
 
-  private String crs_id;
-  private String st_id;
+  private int courseId;
+  private int studentId;
   private String course;
-  private LocalDate start_date;
-  private LocalDate end_date;
+  private LocalDate startDate;
+  private LocalDate endDate;
 
 }
 
