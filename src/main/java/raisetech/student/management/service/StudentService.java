@@ -3,6 +3,7 @@ package raisetech.student.management.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
 import raisetech.student.management.repository.StudentRepository;
@@ -28,12 +29,14 @@ public class StudentService {
     return searchCourseResult;
   }
 
+  @Transactional
   public void registerStudent(Student newStudent) {
     repository.registerNewStudent(0, newStudent.getName(), newStudent.getFurigana(),
         newStudent.getNickname(), newStudent.getEmail(), newStudent.getArea(), newStudent.getAge(),
         newStudent.getGender());
   }
 
+  @Transactional
   public void registerCourse(List<StudentsCourses> newStudentCourse) {
     repository.registerNewCourse(0, repository.newStudentId(),
         newStudentCourse.getLast().getCourse());
