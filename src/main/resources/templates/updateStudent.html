@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>受講生情報更新</title>
+</head>
+<body>
+<h1>受講生情報更新</h1>
+
+<table border="1">
+  <h1>現在の登録状況</h1>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>名前</th>
+    <th>カナ名</th>
+    <th>ニックネーム</th>
+    <th>メールアドレス</th>
+    <th>地域</th>
+    <th>年齢</th>
+    <th>性別</th>
+    <th>備考</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="studentDetail : ${updatedStudent}">
+    <td th:text="${studentDetail.student.id}">1</td>
+    <td th:text="${studentDetail.student.name}">山田太郎</td>
+    <td th:text="${studentDetail.student.furigana}">ヤマダタロウ</td>
+    <td th:text="${studentDetail.student.nickname}">タロー</td>
+    <td th:text="${studentDetail.student.email}">taro@example.co.jp</td>
+    <td th:text="${studentDetail.student.area}">東京都</td>
+    <td th:text="${studentDetail.student.age}">24</td>
+    <td th:text="${studentDetail.student.gender}">男</td>
+    <td th:text="${studentDetail.student.remark}">特になし</td>
+  </tr>
+  </tbody>
+</table>
+
+<h1>登録しなおす情報</h1>
+<form th:action="@{/updateStudent/{id}(id=${studentId})}" th:object="${updatedStudent}" method="post">
+  <input type="hidden" th:field="*{student.id}" required />
+  <div>
+    <label for="name">名前:</label>
+    <input type="text" id="name" th:field="*{student.name}" required />
+  </div>
+  <div>
+    <label for="name">カナ名:</label>
+    <input type="text" id="furigana" th:field="*{student.furigana}" required />
+  </div>
+  <div>
+    <label for="name">ニックネーム:</label>
+    <input type="text" id="nickname" th:field="*{student.nickname}" required />
+  </div>
+  <div>
+    <label for="name">メールアドレス:</label>
+    <input type="text" id="email" th:field="*{student.email}" required />
+  </div>
+  <div>
+    <label for="name">地域:</label>
+    <input type="text" id="area" th:field="*{student.area}" required />
+  </div>
+  <div>
+    <label for="name">年齢:</label>
+    <input type="text" id="age" th:field="*{student.age}" required />
+  </div>
+  <div>
+    <label for="name">性別:</label>
+    <input type="text" id="gender" th:field="*{student.gender}" required />
+  </div>
+  <div>
+    <label for="name">備考:</label>
+    <input type="text" id="remark" th:field="*{student.remark}" required />
+  </div>
+
+  <div>
+    <button type="submit">更新</button>
+  </div>
+</form>
+</body>
+</html>

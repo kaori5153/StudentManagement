@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import raisetech.student.management.controller.converter.StudentConverter;
 import raisetech.student.management.data.Student;
@@ -41,7 +42,7 @@ public class StudentController {
     List<Student> students = service.searchStudentList();
     List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
     model.addAttribute("studentCourseList", studentsCourses);
-    return "studentCourseList";
+    return "studentsCourseList";
   }
 
   //  新しい生徒情報の登録
@@ -76,6 +77,28 @@ public class StudentController {
       return "registerStudent";
     }
     service.registerCourse(studentDetail.getStudentsCourses());
+    return "redirect:/studentList";
+  }
+
+  //  idから生徒情報の検索
+  @GetMapping("/searchStudent/{id}")
+  public String searchStudent(@PathVariable("id") int studentId, Model model) {
+    List<Student> student = service.searchIdStudentInfo(studentId);
+    List<StudentsCourses> studentCourses = service.searchStudentsCourseList();
+    StudentDetail updatedStudent = converter.convertStudentDetails(student, studentCourses).get(0);
+    model.addAttribute("updatedStudent", updatedStudent);
+    model.addAttribute("studentId", studentId);
+    return "updateStudent";
+  }
+
+  //  生徒情報を更新する
+  @PostMapping("/updateStudent/{id}")
+  public String updateStudentInformation(@ModelAttribute StudentDetail updatedStudent, BindingResult result) {
+    if (result.hasErrors()) {
+      result.getAllErrors().forEach(error -> System.out.println(error.toString()));
+      return "updateStudent";
+    }
+    service.updateStudent(updatedStudent.getStudent());
     return "redirect:/studentList";
   }
 }
