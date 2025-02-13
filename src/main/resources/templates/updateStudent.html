@@ -37,7 +37,8 @@
   </tbody>
 </table>
 
-<h1>登録しなおす情報</h1>
+<h1>入力フォーム</h1>
+<h5 th:text="${message}"></h5>
 <form th:action="@{/updateStudent/{id}(id=${studentId})}" th:object="${updatedStudent}" method="post">
   <input type="hidden" th:field="*{student.id}" required />
   <div>

@@ -88,14 +88,17 @@ public class StudentController {
     StudentDetail updatedStudent = converter.convertStudentDetails(student, studentCourses).get(0);
     model.addAttribute("updatedStudent", updatedStudent);
     model.addAttribute("studentId", studentId);
+    model.addAttribute("message", "更新する情報を入力してください");
     return "updateStudent";
   }
 
   //  生徒情報を更新する
   @PostMapping("/updateStudent/{id}")
-  public String updateStudentInformation(@ModelAttribute StudentDetail updatedStudent, BindingResult result) {
+  public String updateStudentInformation(@PathVariable("id") int studentId, @ModelAttribute("updatedStudent") StudentDetail updatedStudent, BindingResult result, Model model){
     if (result.hasErrors()) {
-      result.getAllErrors().forEach(error -> System.out.println(error.toString()));
+      model.addAttribute("updatedStudent", updatedStudent);
+      model.addAttribute("studentId", studentId);
+      model.addAttribute("message", "入力情報を確認してください");
       return "updateStudent";
     }
     service.updateStudent(updatedStudent.getStudent());
