@@ -94,11 +94,21 @@ public class StudentController {
 
   //  生徒情報を更新する
   @PostMapping("/updateStudent/{id}")
-  public String updateStudentInformation(@PathVariable("id") int studentId, @ModelAttribute("updatedStudent") StudentDetail updatedStudent, BindingResult result, Model model){
+  public String updateStudentInformation(@PathVariable("id") int studentId,
+      @ModelAttribute("updatedStudent") StudentDetail updatedStudent, BindingResult result,
+      Model model) {
     if (result.hasErrors()) {
       model.addAttribute("updatedStudent", updatedStudent);
       model.addAttribute("studentId", studentId);
-      model.addAttribute("message", "入力情報を確認してください");
+      if (result.hasFieldErrors("student.name")) {
+        model.addAttribute("errorMessage", "名前にエラーがあります。入力情報を確認してください");
+      } else if (result.hasFieldErrors("student.email")) {
+        model.addAttribute("errorMessage", "メールアドレスにエラーがあります。入力情報を確認してください");
+      } else if (result.hasFieldErrors("student.age")) {
+        model.addAttribute("errorMessage", "年齢にエラーがあります。入力情報を確認してください");
+      } else {
+        model.addAttribute("errorMessage", "入力情報を確認してください");
+      }
       return "updateStudent";
     }
     service.updateStudent(updatedStudent.getStudent());

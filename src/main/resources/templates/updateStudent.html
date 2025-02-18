@@ -38,40 +38,42 @@
 </table>
 
 <h1>入力フォーム</h1>
-<h5 th:text="${message}"></h5>
-<form th:action="@{/updateStudent/{id}(id=${studentId})}" th:object="${updatedStudent}" method="post">
-  <input type="hidden" th:field="*{student.id}" required />
+<p th:text="${message}"></p>
+<p style="color:red" th:text="${errorMessage}"></p>
+<form th:action="@{/updateStudent/{id}(id=${studentId})}" th:object="${updatedStudent}"
+      method="post">
+  <input type="hidden" th:field="*{student.id}" required/>
   <div>
     <label for="name">名前:</label>
-    <input type="text" id="name" th:field="*{student.name}" required />
+    <input type="text" id="name" th:field="*{student.name}" required/>
   </div>
   <div>
     <label for="name">カナ名:</label>
-    <input type="text" id="furigana" th:field="*{student.furigana}" required />
+    <input type="text" id="furigana" th:field="*{student.furigana}" required/>
   </div>
   <div>
     <label for="name">ニックネーム:</label>
-    <input type="text" id="nickname" th:field="*{student.nickname}" required />
+    <input type="text" id="nickname" th:field="*{student.nickname}" required/>
   </div>
   <div>
     <label for="name">メールアドレス:</label>
-    <input type="text" id="email" th:field="*{student.email}" required />
+    <input type="text" id="email" th:field="*{student.email}" required/>
   </div>
   <div>
     <label for="name">地域:</label>
-    <input type="text" id="area" th:field="*{student.area}" required />
+    <input type="text" id="area" th:field="*{student.area}" required/>
   </div>
   <div>
     <label for="name">年齢:</label>
-    <input type="text" id="age" th:field="*{student.age}" required />
+    <input type="text" id="age" th:field="*{student.age}" required/>
   </div>
   <div>
     <label for="name">性別:</label>
-    <input type="text" id="gender" th:field="*{student.gender}" required />
+    <input type="text" id="gender" th:field="*{student.gender}" required/>
   </div>
   <div>
     <label for="name">備考:</label>
-    <input type="text" id="remark" th:field="*{student.remark}" required />
+    <input type="text" id="remark" th:field="*{student.remark}" required/>
   </div>
 
   <div>
