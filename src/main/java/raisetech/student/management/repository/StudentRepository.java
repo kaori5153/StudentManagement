@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
 
@@ -92,4 +93,22 @@ public interface StudentRepository {
       + "#{newStudentCourse})")
   void registerNewCourse(int newStudentCourseId, int newStudentId, String newStudentCourse);
 
+  @Select("SELECT * FROM students WHERE id = #{searchId}")
+  List<Student> searchIdStudent(int searchId);
+
+  @Select("SELECT * FROM students_courses WHERE st_id = #{searchId}")
+  List<StudentsCourses> searchIdStudentCourses(int searchId);
+
+  @Update("UPDATE students SET name = #{updateStudentName},"
+      + " furigana = #{updateStudentFurigana},"
+      + " nickname = #{updateStudentNickName},"
+      + " email = #{updateStudentEmail},"
+      + " area = #{updateStudentArea},"
+      + " age = #{updateStudentAge},"
+      + " gender = #{updateStudentGender},"
+      + " remark = #{updateStudentRemark}"
+      + " WHERE id = #{searchStudentId}")
+  void updateStudentInfo(int searchStudentId, String updateStudentName, String updateStudentFurigana,
+      String updateStudentNickName, String updateStudentEmail, String updateStudentArea, int updateStudentAge,
+      String updateStudentGender,String updateStudentRemark);
 }
