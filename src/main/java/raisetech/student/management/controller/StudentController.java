@@ -84,7 +84,7 @@ public class StudentController {
   @GetMapping("/searchStudent/{id}")
   public String searchStudent(@PathVariable("id") int studentId, Model model) {
     List<Student> student = service.searchIdStudentInfo(studentId);
-    List<StudentsCourses> studentCourses = service.searchStudentsCourseList();
+    List<StudentsCourses> studentCourses = service.searchIdStudentCourses(studentId);
     StudentDetail updatedStudent = converter.convertStudentDetails(student, studentCourses).get(0);
     model.addAttribute("updatedStudent", updatedStudent);
     model.addAttribute("studentId", studentId);
@@ -112,6 +112,25 @@ public class StudentController {
       return "updateStudent";
     }
     service.updateStudent(updatedStudent.getStudent());
+    return "redirect:/studentList";
+  }
+
+  //   idからコース情報の検索
+  @GetMapping("/searchStudentCourse/{id}")
+  public String searchStudentCourse(@PathVariable("id") int courseId, Model model) {
+    StudentsCourses updatedStudentCourse = service.searchCourses(courseId);
+    model.addAttribute("updatedStudentCourse", updatedStudentCourse);
+    model.addAttribute("courseId", courseId);
+    model.addAttribute("message", "開始日または終了日を入力してください");
+    return "updateStudentCourse";
+  }
+
+  //  コース情報を更新する
+  @PostMapping("/updateStudentCourse/{id}")
+  public String updateStudentCourseInformation(@PathVariable("id") int courseId,
+      @ModelAttribute("updatedStudentCourse") StudentsCourses updatedStudentCourse,
+      Model model) {
+    service.updateStudentCourse(updatedStudentCourse);
     return "redirect:/studentList";
   }
 }
