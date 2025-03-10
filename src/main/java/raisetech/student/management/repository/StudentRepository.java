@@ -34,8 +34,8 @@ public interface StudentRepository {
    */
   @Select("SELECT * FROM students_courses")
   @Results({
-      @Result(property = "courseId", column = "courseId"),
-      @Result(property = "studentId", column = "studentId"),
+      @Result(property = "courseId", column = "course_id"),
+      @Result(property = "studentId", column = "student_id"),
       @Result(property = "course", column = "course"),
       @Result(property = "startDate", column = "start_date"),
       @Result(property = "endDate", column = "end_date"),
@@ -85,8 +85,8 @@ public interface StudentRepository {
       String newStudentNickName, String newStudentEmail, String newStudentArea, int newStudentAge,
       String newStudentGender);
 
-  @Insert("INSERT INTO students_courses (courseId,"
-      + "studentId, "
+  @Insert("INSERT INTO students_courses (course_id,"
+      + "student_id, "
       + "course) "
       + "VALUES "
       + "(#{newStudentCourseId}, "
@@ -97,10 +97,10 @@ public interface StudentRepository {
   @Select("SELECT * FROM students WHERE id = #{searchId}")
   List<Student> searchIdStudent(int searchId);
 
-  @Select("SELECT * FROM students_courses WHERE studentId = #{searchId}")
+  @Select("SELECT * FROM students_courses WHERE student_id = #{searchId}")
   List<StudentsCourses> searchIdStudentCourses(int searchId);
 
-  @Select("SELECT * FROM students_courses WHERE courseId = #{searchId}")
+  @Select("SELECT * FROM students_courses WHERE course_id = #{searchId}")
   StudentsCourses searchCourse(int searchId);
 
   @Update("UPDATE students SET name = #{updateStudentName},"
@@ -120,7 +120,7 @@ public interface StudentRepository {
 
   @Update("UPDATE students_courses SET start_date = #{updateStartDate},"
       + " end_date = #{updateEndDate}"
-      + " WHERE courseId = #{searchCourseId}")
+      + " WHERE course_id = #{searchCourseId}")
   void updateStudentCourseInfo(int searchCourseId, LocalDate updateStartDate,
       LocalDate updateEndDate);
 }
