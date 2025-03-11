@@ -1,5 +1,6 @@
 package raisetech.student.management.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -33,8 +34,8 @@ public interface StudentRepository {
    */
   @Select("SELECT * FROM students_courses")
   @Results({
-      @Result(property = "courseId", column = "crs_id"),
-      @Result(property = "studentId", column = "st_id"),
+      @Result(property = "courseId", column = "course_id"),
+      @Result(property = "studentId", column = "student_id"),
       @Result(property = "course", column = "course"),
       @Result(property = "startDate", column = "start_date"),
       @Result(property = "endDate", column = "end_date"),
@@ -84,8 +85,8 @@ public interface StudentRepository {
       String newStudentNickName, String newStudentEmail, String newStudentArea, int newStudentAge,
       String newStudentGender);
 
-  @Insert("INSERT INTO students_courses (crs_id,"
-      + "st_id, "
+  @Insert("INSERT INTO students_courses (course_id,"
+      + "student_id, "
       + "course) "
       + "VALUES "
       + "(#{newStudentCourseId}, "
@@ -96,8 +97,11 @@ public interface StudentRepository {
   @Select("SELECT * FROM students WHERE id = #{searchId}")
   List<Student> searchIdStudent(int searchId);
 
-  @Select("SELECT * FROM students_courses WHERE st_id = #{searchId}")
+  @Select("SELECT * FROM students_courses WHERE student_id = #{searchId}")
   List<StudentsCourses> searchIdStudentCourses(int searchId);
+
+  @Select("SELECT * FROM students_courses WHERE course_id = #{searchId}")
+  StudentsCourses searchCourse(int searchId);
 
   @Update("UPDATE students SET name = #{updateStudentName},"
       + " furigana = #{updateStudentFurigana},"
@@ -108,7 +112,15 @@ public interface StudentRepository {
       + " gender = #{updateStudentGender},"
       + " remark = #{updateStudentRemark}"
       + " WHERE id = #{searchStudentId}")
-  void updateStudentInfo(int searchStudentId, String updateStudentName, String updateStudentFurigana,
-      String updateStudentNickName, String updateStudentEmail, String updateStudentArea, int updateStudentAge,
-      String updateStudentGender,String updateStudentRemark);
+  void updateStudentInfo(int searchStudentId, String updateStudentName,
+      String updateStudentFurigana,
+      String updateStudentNickName, String updateStudentEmail, String updateStudentArea,
+      int updateStudentAge,
+      String updateStudentGender, String updateStudentRemark);
+
+  @Update("UPDATE students_courses SET start_date = #{updateStartDate},"
+      + " end_date = #{updateEndDate}"
+      + " WHERE course_id = #{searchCourseId}")
+  void updateStudentCourseInfo(int searchCourseId, LocalDate updateStartDate,
+      LocalDate updateEndDate);
 }

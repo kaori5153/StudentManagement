@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>コース情報更新</title>
+</head>
+<body>
+<h1>コース情報更新</h1>
+
+<table border="1">
+  <h2>現在の登録状況</h2>
+  <thead>
+  <tr>
+    <th>受講コース</th>
+    <th>コース開始日</th>
+    <th>コース終了日</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="courseDetail : ${updatedStudentCourse}">
+    <td th:text="${courseDetail.course}">Java</td>
+    <td th:text="${courseDetail.startDate}">2024-12-31</td>
+    <td th:text="${courseDetail.endDate}">2025-01-01</td>
+  </tr>
+  </tbody>
+</table>
+
+<h2>入力フォーム</h2>
+<p th:text="${message}"></p>
+<form th:action="@{/updateStudentCourse/{id}(id=${courseId})}" th:object="${updatedStudentCourse}"
+      method="post">
+  <input type="hidden" th:field="*{courseId}" required/>
+  <input type="hidden" th:field="*{studentId}" required/>
+  <input type="hidden" th:field="*{course}" required/>
+
+  <div>
+    <label for="startDate">開始日:</label>
+    <input type="date" id="startDate" th:field="*{startDate}" required />
+  </div>
+  <div>
+    <label for="endDate">終了日:</label>
+    <input type="date" id="endDate" th:field="*{endDate}"/>
+  </div>
+
+  <div>
+    <button type="submit">更新</button>
+  </div>
+</form>
+</body>
+</html>
