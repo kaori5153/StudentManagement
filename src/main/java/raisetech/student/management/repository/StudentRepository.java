@@ -40,7 +40,7 @@ public interface StudentRepository {
       @Result(property = "startDate", column = "start_date"),
       @Result(property = "endDate", column = "end_date"),
       @Result(property = "remark", column = "remark"),
-      @Result(property = "isDeleted", column = "isDeleted")
+      @Result(property = "deleted", column = "deleted")
   })
   List<StudentsCourses> searchStudentsCourses();
 
@@ -110,13 +110,14 @@ public interface StudentRepository {
       + " area = #{updateStudentArea},"
       + " age = #{updateStudentAge},"
       + " gender = #{updateStudentGender},"
-      + " remark = #{updateStudentRemark}"
+      + " remark = #{updateStudentRemark},"
+      + " deleted = #{deleted}"
       + " WHERE id = #{searchStudentId}")
   void updateStudentInfo(int searchStudentId, String updateStudentName,
       String updateStudentFurigana,
       String updateStudentNickName, String updateStudentEmail, String updateStudentArea,
       int updateStudentAge,
-      String updateStudentGender, String updateStudentRemark);
+      String updateStudentGender, String updateStudentRemark, boolean deleted);
 
   @Update("UPDATE students_courses SET start_date = #{updateStartDate},"
       + " end_date = #{updateEndDate}"

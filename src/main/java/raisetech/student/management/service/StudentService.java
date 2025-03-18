@@ -62,7 +62,7 @@ public class StudentService {
     repository.updateStudentInfo(updateStudent.getId(), updateStudent.getName(),
         updateStudent.getFurigana(), updateStudent.getNickname(), updateStudent.getEmail(),
         updateStudent.getArea(), updateStudent.getAge(), updateStudent.getGender(),
-        updateStudent.getRemark());
+        updateStudent.getRemark(),updateStudent.isDeleted());
   }
 
   @Transactional

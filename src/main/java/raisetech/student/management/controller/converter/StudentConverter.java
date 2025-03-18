@@ -14,17 +14,19 @@ public class StudentConverter {
       List<StudentsCourses> studentsCourses) {
     List<StudentDetail> studentDetails = new ArrayList<>();
     for (Student student : students) {
-      StudentDetail studentDetail = new StudentDetail();
-      studentDetail.setStudent(student);
+      if(!student.isDeleted()) {
+        StudentDetail studentDetail = new StudentDetail();
+        studentDetail.setStudent(student);
 
-      List<StudentsCourses> convertStudentCourses = new ArrayList<>();
-      for (StudentsCourses StudentCourse : studentsCourses) {
-        if (student.getId() == StudentCourse.getStudentId()) {
-          convertStudentCourses.add(StudentCourse);
+        List<StudentsCourses> convertStudentCourses = new ArrayList<>();
+        for (StudentsCourses StudentCourse : studentsCourses) {
+          if (student.getId() == StudentCourse.getStudentId()) {
+            convertStudentCourses.add(StudentCourse);
+          }
         }
-      }
         studentDetail.setStudentsCourses(convertStudentCourses);
-      studentDetails.add(studentDetail);
+        studentDetails.add(studentDetail);
+      }
     }
     return studentDetails;
   }
