@@ -54,17 +54,8 @@ public interface StudentRepository {
 
   /**
    * 新規受講生の情報を登録します。
-   *
-   * @param newStudentId：新規受講生のID
-   * @param newStudentName：新規受講生の名前
-   * @param newStudentFurigana：新規受講生の名前のフリガナ
-   * @param newStudentNickName：新規受講生のニックネーム
-   * @param newStudentEmail：新規受講生のメールアドレス
-   * @param newStudentArea：新規受講生の住んでいる地域
-   * @param newStudentAge：新規受講生の年齢
-   * @param newStudentGender：新規受講生の性別
    */
-  @Insert("INSERT INTO students (id,"
+  @Insert("INSERT INTO students ("
       + " name, "
       + "furigana, "
       + "nickname, "
@@ -73,17 +64,14 @@ public interface StudentRepository {
       + "age, "
       + "gender) "
       + "VALUES "
-      + "(#{newStudentId}, "
-      + "#{newStudentName}, "
-      + "#{newStudentFurigana}, "
-      + "#{newStudentNickName}, "
-      + "#{newStudentEmail}, "
-      + "#{newStudentArea}, "
-      + "#{newStudentAge}, "
-      + "#{newStudentGender})")
-  void registerNewStudent(int newStudentId, String newStudentName, String newStudentFurigana,
-      String newStudentNickName, String newStudentEmail, String newStudentArea, int newStudentAge,
-      String newStudentGender);
+      + "(#{name}, "
+      + "#{furigana}, "
+      + "#{nickname}, "
+      + "#{email}, "
+      + "#{area}, "
+      + "#{age}, "
+      + "#{gender})")
+  void registerNewStudent(Student newStudent);
 
   @Insert("INSERT INTO students_courses (course_id,"
       + "student_id, "
@@ -103,25 +91,20 @@ public interface StudentRepository {
   @Select("SELECT * FROM students_courses WHERE course_id = #{searchId}")
   StudentsCourses searchCourse(int searchId);
 
-  @Update("UPDATE students SET name = #{updateStudentName},"
-      + " furigana = #{updateStudentFurigana},"
-      + " nickname = #{updateStudentNickName},"
-      + " email = #{updateStudentEmail},"
-      + " area = #{updateStudentArea},"
-      + " age = #{updateStudentAge},"
-      + " gender = #{updateStudentGender},"
-      + " remark = #{updateStudentRemark},"
+  @Update("UPDATE students SET name = #{name},"
+      + " furigana = #{furigana},"
+      + " nickname = #{nickname},"
+      + " email = #{email},"
+      + " area = #{area},"
+      + " age = #{age},"
+      + " gender = #{gender},"
+      + " remark = #{remark},"
       + " deleted = #{deleted}"
-      + " WHERE id = #{searchStudentId}")
-  void updateStudentInfo(int searchStudentId, String updateStudentName,
-      String updateStudentFurigana,
-      String updateStudentNickName, String updateStudentEmail, String updateStudentArea,
-      int updateStudentAge,
-      String updateStudentGender, String updateStudentRemark, boolean deleted);
+      + " WHERE id = #{id}")
+  void updateStudentInfo(Student updateStudent);
 
-  @Update("UPDATE students_courses SET start_date = #{updateStartDate},"
-      + " end_date = #{updateEndDate}"
-      + " WHERE course_id = #{searchCourseId}")
-  void updateStudentCourseInfo(int searchCourseId, LocalDate updateStartDate,
-      LocalDate updateEndDate);
+  @Update("UPDATE students_courses SET start_date = #{startDate},"
+      + " end_date = #{endDate}"
+      + " WHERE course_id = #{courseId}")
+  void updateStudentCourseInfo(StudentsCourses updatedCourses);
 }

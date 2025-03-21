@@ -46,9 +46,7 @@ public class StudentService {
 
   @Transactional
   public void registerStudent(Student newStudent) {
-    repository.registerNewStudent(0, newStudent.getName(), newStudent.getFurigana(),
-        newStudent.getNickname(), newStudent.getEmail(), newStudent.getArea(), newStudent.getAge(),
-        newStudent.getGender());
+    repository.registerNewStudent(newStudent);
   }
 
   @Transactional
@@ -59,15 +57,11 @@ public class StudentService {
 
   @Transactional
   public void updateStudent(Student updateStudent) {
-    repository.updateStudentInfo(updateStudent.getId(), updateStudent.getName(),
-        updateStudent.getFurigana(), updateStudent.getNickname(), updateStudent.getEmail(),
-        updateStudent.getArea(), updateStudent.getAge(), updateStudent.getGender(),
-        updateStudent.getRemark(),updateStudent.isDeleted());
+    repository.updateStudentInfo(updateStudent);
   }
 
   @Transactional
   public void updateStudentCourse(StudentsCourses updatedCourses) {
-    repository.updateStudentCourseInfo(updatedCourses.getCourseId(), updatedCourses.getStartDate(),
-        updatedCourses.getEndDate());
+    repository.updateStudentCourseInfo(updatedCourses);
   }
 }
