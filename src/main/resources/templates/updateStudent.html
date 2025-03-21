@@ -10,8 +10,7 @@
 <h2>入力フォーム</h2>
 <p th:text="${message}"></p>
 <p style="color:red" th:text="${errorMessage}"></p>
-<form th:action="@{/updateStudent/{id}(id=${studentId})}" th:object="${updatedStudent}"
-      method="post">
+<form th:action="@{/updateStudent/{id}(id=${studentId})}" th:object="${updatedStudent}" method="post">
   <input type="hidden" th:field="*{student.id}" required/>
   <div>
     <label for="name">名前:</label>
@@ -45,6 +44,10 @@
     <label for="name">備考:</label>
     <input type="text" id="remark" th:field="*{student.remark}" />
   </div>
+  <div>
+    <label><input type="checkbox" th:field="*{student.deleted}"/> 生徒情報を削除する</label>
+  </div>
+
 
   <table border="1">
     <h2>コース情報</h2>
