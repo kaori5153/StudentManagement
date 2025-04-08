@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>受講生情報更新</title>
+</head>
+<body>
+<h1>受講生情報更新</h1>
+
+<h2>入力フォーム</h2>
+<p th:text="${message}"></p>
+<p style="color:red" th:text="${errorMessage}"></p>
+<form th:action="@{/updateStudent/{id}(id=${studentId})}" th:object="${updatedStudent}" method="post">
+  <input type="hidden" th:field="*{student.id}" required/>
+  <div>
+    <label for="name">名前:</label>
+    <input type="text" id="name" th:field="*{student.name}" required/>
+  </div>
+  <div>
+    <label for="name">カナ名:</label>
+    <input type="text" id="furigana" th:field="*{student.furigana}" required/>
+  </div>
+  <div>
+    <label for="name">ニックネーム:</label>
+    <input type="text" id="nickname" th:field="*{student.nickname}" required/>
+  </div>
+  <div>
+    <label for="name">メールアドレス:</label>
+    <input type="text" id="email" th:field="*{student.email}" required/>
+  </div>
+  <div>
+    <label for="name">地域:</label>
+    <input type="text" id="area" th:field="*{student.area}" required/>
+  </div>
+  <div>
+    <label for="name">年齢:</label>
+    <input type="text" id="age" th:field="*{student.age}" required/>
+  </div>
+  <div>
+    <label for="name">性別:</label>
+    <input type="text" id="gender" th:field="*{student.gender}" required/>
+  </div>
+  <div>
+    <label for="name">備考:</label>
+    <input type="text" id="remark" th:field="*{student.remark}" />
+  </div>
+  <div>
+    <label><input type="checkbox" th:field="*{student.deleted}"/> 生徒情報を削除する</label>
+  </div>
+
+
+  <table border="1">
+    <h2>コース情報</h2>
+    <thead>
+    <tr>
+      <th>受講コース</th>
+      <th>コース開始日</th>
+      <th>コース終了日</th>
+    </tr>
+    </thead>
+    </tbody>
+    <tr th:each="courseDetail: ${updatedStudent.studentsCourses}">
+      <td> <a th:href="@{/searchStudentCourse/{id}(id=${courseDetail.courseId})}" th:text="${courseDetail.course}"></a></td>
+      <td th:text="${courseDetail.startDate}">2024/12/31</td>
+      <td th:text="${courseDetail.endDate}">2024/12/31</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div>
+    <button type="submit">更新</button>
+  </div>
+</form>
+</body>
+</html>
