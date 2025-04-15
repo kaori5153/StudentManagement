@@ -48,7 +48,7 @@ public class StudentController {
   public List<StudentCourses> getStudentsCourseList() {
     return service.searchStudentsCourseList();
   }
-  
+
   /**
    * 新規受講生情報の登録を行う
    *
@@ -112,14 +112,14 @@ public class StudentController {
   /**
    * 指定したコースIDの情報を更新する。開始日と終了日を更新できる。
    *
-   * @param courseId       更新するコースID
-   * @param updatedStudent コース情報を更新する受講生
+   * @param courseId             更新するコースID
+   * @param updatedStudentCourse 更新するコース情報
    * @return 実行結果
    */
   @PutMapping("/updateStudentCourse/{id}")
   public ResponseEntity<String> updateStudentCourseInformation(@PathVariable("id") int courseId,
-      @RequestBody StudentDetail updatedStudent) {
-    service.updateStudentCourse(updatedStudent.getStudentCourses().get(courseId));
+      @RequestBody StudentCourses updatedStudentCourse) {
+    service.updateStudentCourse(updatedStudentCourse);
     return ResponseEntity.ok("更新処理完了");
   }
 }
