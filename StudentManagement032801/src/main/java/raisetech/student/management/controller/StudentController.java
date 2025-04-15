@@ -3,18 +3,15 @@ package raisetech.student.management.controller;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import raisetech.student.management.controller.converter.StudentConverter;
-import raisetech.student.management.data.Student;
-import raisetech.student.management.data.StudentsCourses;
+import raisetech.student.management.data.StudentCourses;
 import raisetech.student.management.domain.StudentDetail;
 import raisetech.student.management.service.StudentService;
 
@@ -33,89 +30,96 @@ public class StudentController {
   }
 
   /**
-   * 生徒情報を表示する
-   * @param model
-   * @return
+   * 受講生情報を表示する
+   *
+   * @return 受講生情報一覧リスト
    */
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList(Model model) {
+  public List<StudentDetail> getStudentList() {
     return service.searchStudentList();
   }
 
-  //  受講コース情報を表示する
+  /**
+   * コース情報一覧を表示する
+   *
+   * @return コース情報一覧リスト
+   */
   @GetMapping("/studentsCourseList")
-  public String getStudentsCourseList(Model model) {
-    List<StudentsCourses> studentsCourses = service.searchStudentsCourseList();
-    model.addAttribute("studentCourseList", studentsCourses);
-    return "studentsCourseList";
+  public List<StudentCourses> getStudentsCourseList() {
+    return service.searchStudentsCourseList();
   }
-
-  //  新しい生徒情報の登録
-  @GetMapping("/newStudent")
-  public String newStudent(Model model) {
-    model.addAttribute("studentDetail", new StudentDetail());
-    return "registerStudent";
-  }
-
+  
+  /**
+   * 新規受講生情報の登録を行う
+   *
+   * @param studentDetail 受講生詳細
+   * @return 実行結果
+   */
   @PostMapping("/registerStudent")
-  public String registerStudent(@ModelAttribute StudentDetail studentDetail) {
+  public ResponseEntity<String> registerStudent(@RequestBody StudentDetail studentDetail) {
     service.registerStudent(studentDetail.getStudent());
-    return "redirect:/newStudentCourse";
-  }
-
-  //  コース情報の登録
-  @GetMapping("/newStudentCourse")
-  public String newStudentCourse(@ModelAttribute("studentDetail") StudentDetail studentDetail,
-      Model model) {
-    model.addAttribute("studentDetail", studentDetail);
-    return "registerCourse";
-  }
-
-  @PostMapping("/registerCourse")
-  public String registerCourse(@ModelAttribute StudentDetail studentDetail) {
-    service.registerCourse(studentDetail.getStudentsCourses());
-    return "redirect:/studentList";
-  }
-
-  //  idから生徒情報の検索
-  @GetMapping("/searchStudent/{id}")
-  public StudentDetail searchStudent(@PathVariable("id") int studentId, Model model) {
-    StudentDetail updatedStudent = service.searchIdStudentInfo(studentId);
-    model.addAttribute("updatedStudent", updatedStudent);
-    model.addAttribute("studentId", studentId);
-    model.addAttribute("message", "更新する情報を入力してください");
-    return updatedStudent;
+    return ResponseEntity.ok("登録処理完了");
   }
 
   /**
-   * 指定した生徒idの登録情報を更新する。
-   * @param studentId 生徒ID
-   * @param updatedStudent 更新する生徒
-   * @return
+   * 受講生コース情報の登録を行う
+   *
+   * @param studentDetail 受講生詳細
+   * @return 実行結果
    */
-  @PostMapping("/updateStudent/{id}")
+  @PostMapping("/registerCourse")
+  public ResponseEntity<String> registerCourse(@RequestBody StudentDetail studentDetail) {
+    service.registerCourse(studentDetail.getStudentCourses());
+    return ResponseEntity.ok("登録処理完了");
+  }
+
+  /**
+   * 指定した受講生IDの受講生詳細情報を表示する
+   *
+   * @param studentId 表示したい受講生のID
+   * @return 受講生詳細情報
+   */
+  @GetMapping("/searchStudent/{id}")
+  public StudentDetail searchStudent(@PathVariable("id") int studentId) {
+    return service.searchIdStudentInfo(studentId);
+  }
+
+  /**
+   * 指定した受講生IDの登録情報を更新する。 キャンセルフラグの更新も論理削除で行う。
+   *
+   * @param studentId      受講生ID
+   * @param updatedStudent 更新する受講生
+   * @return 実行結果
+   */
+  @PutMapping("/updateStudent/{id}")
   public ResponseEntity<String> updateStudentInformation(@PathVariable("id") int studentId,
       @RequestBody StudentDetail updatedStudent) {
     service.updateStudent(updatedStudent.getStudent());
     return ResponseEntity.ok("更新処理完了");
   }
 
-  //   idからコース情報の検索
+  /**
+   * 指定したコースIDの情報を表示する
+   *
+   * @param courseId コースID
+   * @return コース情報
+   */
   @GetMapping("/searchStudentCourse/{id}")
-  public String searchStudentCourse(@PathVariable("id") int courseId, Model model) {
-    StudentsCourses updatedStudentCourse = service.searchCourses(courseId);
-    model.addAttribute("updatedStudentCourse", updatedStudentCourse);
-    model.addAttribute("courseId", courseId);
-    model.addAttribute("message", "開始日または終了日を入力してください");
-    return "updateStudentCourse";
+  public StudentCourses searchStudentCourse(@PathVariable("id") int courseId) {
+    return service.searchCourses(courseId);
   }
 
-  //  コース情報を更新する
-  @PostMapping("/updateStudentCourse/{id}")
-  public String updateStudentCourseInformation(@PathVariable("id") int courseId,
-      @ModelAttribute("updatedStudentCourse") StudentsCourses updatedStudentCourse,
-      Model model) {
-    service.updateStudentCourse(updatedStudentCourse);
-    return "redirect:/studentList";
+  /**
+   * 指定したコースIDの情報を更新する。開始日と終了日を更新できる。
+   *
+   * @param courseId       更新するコースID
+   * @param updatedStudent コース情報を更新する受講生
+   * @return 実行結果
+   */
+  @PutMapping("/updateStudentCourse/{id}")
+  public ResponseEntity<String> updateStudentCourseInformation(@PathVariable("id") int courseId,
+      @RequestBody StudentDetail updatedStudent) {
+    service.updateStudentCourse(updatedStudent.getStudentCourses().get(courseId));
+    return ResponseEntity.ok("更新処理完了");
   }
 }

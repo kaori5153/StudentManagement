@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import raisetech.student.management.data.Student;
-import raisetech.student.management.data.StudentsCourses;
+import raisetech.student.management.data.StudentCourses;
 
 @Getter
 @Setter
@@ -15,6 +15,6 @@ import raisetech.student.management.data.StudentsCourses;
 public class StudentDetail {
 
   private Student student;
-  private List<StudentsCourses> studentsCourses;  //Studentに対して複数のコース情報が紐づく
+  private List<StudentCourses> studentCourses;  //Studentに対して複数のコース情報が紐づく
 
 }
