@@ -1,11 +1,13 @@
 package raisetech.student.management.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +20,7 @@ import raisetech.student.management.service.StudentService;
 /**
  * 受講生の検索や登録、更新など行うREST APIとして実行されるController
  */
+@Validated
 @RestController
 public class StudentController {
 
@@ -34,7 +37,7 @@ public class StudentController {
    *
    * @return 受講生情報一覧リスト
    */
-  @GetMapping("/studentList")
+  @GetMapping("/students")
   public List<StudentDetail> getStudentList() {
     return service.searchStudentList();
   }
@@ -44,7 +47,7 @@ public class StudentController {
    *
    * @return コース情報一覧リスト
    */
-  @GetMapping("/studentsCourseList")
+  @GetMapping("/students/courses")
   public List<StudentCourses> getStudentsCourseList() {
     return service.searchStudentsCourseList();
   }
@@ -55,8 +58,8 @@ public class StudentController {
    * @param studentDetail 受講生詳細
    * @return 実行結果
    */
-  @PostMapping("/registerStudent")
-  public ResponseEntity<String> registerStudent(@RequestBody StudentDetail studentDetail) {
+  @PostMapping("/student")
+  public ResponseEntity<String> registerStudent(@RequestBody @Valid StudentDetail studentDetail) {
     service.registerStudent(studentDetail.getStudent());
     return ResponseEntity.ok("登録処理完了");
   }
@@ -67,8 +70,9 @@ public class StudentController {
    * @param studentDetail 受講生詳細
    * @return 実行結果
    */
-  @PostMapping("/registerCourse")
-  public ResponseEntity<String> registerCourse(@RequestBody StudentDetail studentDetail) {
+  @PostMapping("/student/course")
+  public ResponseEntity<String> registerCourse(@RequestBody @Valid
+  StudentDetail studentDetail) {
     service.registerCourse(studentDetail.getStudentCourses());
     return ResponseEntity.ok("登録処理完了");
   }
@@ -79,8 +83,8 @@ public class StudentController {
    * @param studentId 表示したい受講生のID
    * @return 受講生詳細情報
    */
-  @GetMapping("/searchStudent/{id}")
-  public StudentDetail searchStudent(@PathVariable("id") int studentId) {
+  @GetMapping("/student/{id}")
+  public StudentDetail searchStudent(@PathVariable("id") @Min(1) @Max(999) int studentId) {
     return service.searchIdStudentInfo(studentId);
   }
 
@@ -91,11 +95,19 @@ public class StudentController {
    * @param updatedStudent 更新する受講生
    * @return 実行結果
    */
-  @PutMapping("/updateStudent/{id}")
-  public ResponseEntity<String> updateStudentInformation(@PathVariable("id") int studentId,
-      @RequestBody StudentDetail updatedStudent) {
-    service.updateStudent(updatedStudent.getStudent());
-    return ResponseEntity.ok("更新処理完了");
+  @PutMapping("/student/{id}")
+  public ResponseEntity<String> updateStudentInformation(
+      @PathVariable("id") @Min(1) @Max(999) int studentId,
+      @RequestBody @Valid StudentDetail updatedStudent) {
+    String message;
+    if (studentId == updatedStudent.getStudent().getId()) {
+      service.updateStudent(updatedStudent.getStudent());
+      message = "更新処理完了";
+    } else {
+      message = "受講生IDを正しく指定してください";
+    }
+
+    return ResponseEntity.ok(message);
   }
 
   /**
@@ -104,8 +116,9 @@ public class StudentController {
    * @param courseId コースID
    * @return コース情報
    */
-  @GetMapping("/searchStudentCourse/{id}")
-  public StudentCourses searchStudentCourse(@PathVariable("id") int courseId) {
+  @GetMapping("/student/course/{id}")
+  public StudentCourses searchStudentCourse(
+      @PathVariable("id") @Min(1) @Max(999) int courseId) {
     return service.searchCourses(courseId);
   }
 
@@ -116,10 +129,17 @@ public class StudentController {
    * @param updatedStudentCourse 更新するコース情報
    * @return 実行結果
    */
-  @PutMapping("/updateStudentCourse/{id}")
-  public ResponseEntity<String> updateStudentCourseInformation(@PathVariable("id") int courseId,
-      @RequestBody StudentCourses updatedStudentCourse) {
-    service.updateStudentCourse(updatedStudentCourse);
-    return ResponseEntity.ok("更新処理完了");
+  @PutMapping("/student/course/{id}")
+  public ResponseEntity<String> updateStudentCourseInformation(
+      @PathVariable("id") @Min(1) @Max(999) int courseId,
+      @RequestBody @Valid StudentCourses updatedStudentCourse) {
+    String message;
+    if (courseId == updatedStudentCourse.getCourseId()) {
+      service.updateStudentCourse(updatedStudentCourse);
+      message = "更新処理完了";
+    } else {
+      message = "コースIDを正しく指定してください";
+    }
+    return ResponseEntity.ok(message);
   }
 }
