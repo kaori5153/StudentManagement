@@ -1,16 +1,23 @@
 package raisetech.student.management.domain;
 
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import raisetech.student.management.data.Student;
-import raisetech.student.management.data.StudentsCourses;
+import raisetech.student.management.data.StudentCourses;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentDetail {
 
+  @Valid
   private Student student;
-  private List<StudentsCourses> studentsCourses;  //Studentに対して複数のコース情報が紐づく
 
+  @Valid
+  private List<StudentCourses> studentCourses;
 }
