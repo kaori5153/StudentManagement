@@ -155,5 +155,5 @@ public class StudentController {
   public List<StudentDetail> getException() throws TestException {
     throw new TestException("このURLは利用できません。正しいURLはexceptionsです。");
   }
-  
+
 }
