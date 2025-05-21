@@ -41,8 +41,7 @@ class StudentServiceTest {
     List<Student> student = new ArrayList<>();
     List<StudentCourses> courses = new ArrayList<>();
 
-    when(repository.searchStudent()).thenReturn(
-        student);
+    when(repository.searchStudent()).thenReturn(student);
     when(repository.searchStudentsCourses()).thenReturn(courses);
 
     sut.searchStudentList();
@@ -92,4 +91,50 @@ class StudentServiceTest {
 
     verify(repository, times(1)).searchIdCourse(id);
   }
+
+  @Test
+  void 受講生情報の登録_リポジトリの処理が適切に呼び出されていること() {
+    Student student = new Student();
+
+    sut.registerStudent(student);
+
+    verify(repository, times(1)).registerNewStudent(student);
+  }
+
+  @Test
+  void コース情報の登録_リポジトリの処理が適切に呼び出されていること() {
+    StudentCourses courses = new StudentCourses();
+    courses.setCourse("Java");
+
+    List<StudentCourses> studentCourses = new ArrayList<>();
+    studentCourses.add(courses);
+
+    int id = 1;
+
+    when(repository.newStudentId()).thenReturn(id);
+
+    sut.registerCourse(studentCourses);
+
+    verify(repository, times(1)).registerNewCourse(id, "Java");
+  }
+
+  @Test
+  void 受講生情報の更新_リポジトリの処理が適切に呼び出されていること() {
+    Student student = new Student();
+
+    sut.updateStudent(student);
+
+    verify(repository, times(1)).updateStudentInfo(student);
+  }
+
+  @Test
+  void コース情報の更新_リポジトリの処理が適切に呼び出されていること() {
+    StudentCourses courses = new StudentCourses();
+
+    sut.updateStudentCourse(courses);
+
+    verify(repository, times(1)).updateStudentCourseInfo(courses);
+  }
+
+
 }
