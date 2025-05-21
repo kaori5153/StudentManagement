@@ -135,6 +135,4 @@ class StudentServiceTest {
 
     verify(repository, times(1)).updateStudentCourseInfo(courses);
   }
-
-
 }
