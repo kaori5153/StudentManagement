@@ -5,12 +5,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Schema(description = "受講生")
 @Getter
 @Setter
+@AllArgsConstructor
 public class Student {
 
   @Schema(description = "受講生ID", type = "int", example = "1", required = true)
