@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,10 +15,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class StudentCourses {
 
   @Schema(description = "コースID", type = "int", example = "1", required = true)
-  @Min(1)
   @Max(999)
   private int courseId;
 
@@ -27,7 +28,7 @@ public class StudentCourses {
   private int studentId;
 
   @Schema(description = "コース", type = "String", example = "Java", required = true)
-  @Size(min = 1, max = 20)
+  @Size(min = 1, max = 20, message = "1文字以上20文字以下で入力してください")
   private String course;
 
   @Schema(description = "学習開始日", type = "LocalDate", example = "2023-04-01")

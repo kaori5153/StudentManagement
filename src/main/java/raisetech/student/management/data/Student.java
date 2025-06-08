@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,15 +14,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class Student {
 
   @Schema(description = "受講生ID", type = "int", example = "1", required = true)
-  @Min(1)
   @Max(999)
   private int id;
 
   @Schema(description = "氏名", type = "String", example = "山田太郎", required = true)
-  @Size(min = 2, max = 50)
+  @Size(min = 2, max = 50, message = "2文字以上50文字以下で入力してください")
   private String name;
 
   @Schema(description = "ふりがな", type = "String", example = "やまだたろう")
