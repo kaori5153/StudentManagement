@@ -121,29 +121,6 @@ class StudentControllerTest {
   }
 
   @Test
-  void 受講生情報の名前にエラーがありBadRequestが返ってくること() throws Exception {
-    Student student = Student.builder()
-        .id(1)
-        .furigana("さとうたろう")
-        .nickname("たろう")
-        .email("taro@gmail.com")
-        .area("東京都")
-        .age(22)
-        .gender("男")
-        .build();
-
-    StudentDetail studentDetail = StudentDetail.builder()
-        .student(student).build();
-
-    mockMvc.perform(MockMvcRequestBuilders.post("/student")
-            .contentType(MediaType.APPLICATION_JSON) // JSONを送信
-            .content(new ObjectMapper().writeValueAsString(studentDetail))) // JSONデータを追加
-        .andExpect(status().isBadRequest());
-
-    verify(service, times(0)).registerStudent(any(Student.class));
-  }
-
-  @Test
   void 受講生コース情報登録が実行できてレスポンスが返ってくること() throws Exception {
     StudentCourses course = StudentCourses.builder()
         .courseId(1)
@@ -157,8 +134,8 @@ class StudentControllerTest {
         .studentCourses(courses).build();
 
     mockMvc.perform(MockMvcRequestBuilders.post("/student/course")
-            .contentType(MediaType.APPLICATION_JSON) // JSONを送信
-            .content(new ObjectMapper().writeValueAsString(studentDetail))) // JSONデータを追加
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(studentDetail)))
             .andExpect(status().isOk())
             .andExpect(content().string("登録処理完了"));
 
@@ -173,6 +150,17 @@ class StudentControllerTest {
         .andExpect(status().isOk());
 
     verify(service, times(1)).searchIdStudentInfo(studentId);
+  }
+
+  @Test
+  void 受講生ID検索で誤ったIDを渡してエラーレスポンスが返ってくること() throws Exception {
+    int studentId = 0;
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/student/{id}",studentId))
+        .andExpect(status().isBadRequest())
+            .andExpect(content().string("リクエストが不正です"));
+
+    verify(service, times(0)).searchIdStudentInfo(studentId);
   }
 
   @Test
@@ -269,4 +257,31 @@ class StudentControllerTest {
     verify(service, times(0)).updateStudentCourse(any(StudentCourses.class));
   }
 
+  /**
+   * 質問中のテスト
+   * @throws Exception
+   */
+  @Test
+  void 受講生情報の名前にエラーがありBadRequestが返ってくること() throws Exception {
+    Student student = Student.builder()
+        .id(1)
+        .furigana("さとうたろう")
+        .nickname("たろう")
+        .email("taro@gmail.com")
+        .area("東京都")
+        .age(22)
+        .gender("男")
+        .build();
+
+    StudentDetail studentDetail = StudentDetail.builder()
+        .student(student).build();
+
+    mockMvc.perform(MockMvcRequestBuilders.post("/student")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(studentDetail)))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("入力内容が不正です" ));
+
+    verify(service, times(0)).registerStudent(any(Student.class));
+  }
 }
