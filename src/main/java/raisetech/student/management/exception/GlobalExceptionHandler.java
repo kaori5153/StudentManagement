@@ -21,11 +21,6 @@ class GlobalExceptionHandler {
     return ResponseEntity.badRequest().body("リクエストが不正です");
   }
 
-  @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-  public ResponseEntity<String> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex){
-    return ResponseEntity.badRequest().body("入力内容が不正です" );
-  }
-
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex){
     return ResponseEntity.badRequest().body("入力内容が不正です");
