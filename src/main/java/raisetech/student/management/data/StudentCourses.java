@@ -4,6 +4,8 @@ package raisetech.student.management.data;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,7 @@ public class StudentCourses {
   private int studentId;
 
   @Schema(description = "コース", type = "String", example = "Java", required = true)
+  @NotBlank(message = "コース名を入力してください")
   @Size(min = 1, max = 20, message = "1文字以上20文字以下で入力してください")
   private String course;
 

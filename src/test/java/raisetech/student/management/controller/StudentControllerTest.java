@@ -66,18 +66,6 @@ class StudentControllerTest {
     }
 
     @Test
-    void 受講生詳細のコース情報の入力チェックのコース名の文字数チェックで掛かること() {
-      StudentCourses course = new StudentCourses(1, 1, "", LocalDate.of(2025, 1, 1),
-          LocalDate.of(2026, 1, 1));
-
-      Set<ConstraintViolation<StudentCourses>> violations = validator.validate(course);
-
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).extracting("message")
-          .containsOnly("1文字以上20文字以下で入力してください");
-    }
-
-    @Test
     void 受講生詳細の受講生の入力チェックで名前のnullチェックで掛かること() {
       Student student = new Student(1, null, "さとうたろう", "たろう", "taro@gmail.com",
           "東京都", 22, "男", "", false);
@@ -109,6 +97,30 @@ class StudentControllerTest {
 
       assertThat(violations.size()).isEqualTo(1);
       assertThat(violations).extracting("message").containsOnly("メールアドレスを入力してください");
+    }
+
+    @Test
+    void 受講生詳細のコース情報の入力チェックのコース名のnullチェックで掛かること() {
+      StudentCourses course = new StudentCourses(1, 1, null, LocalDate.of(2025, 1, 1),
+          LocalDate.of(2026, 1, 1));
+
+      Set<ConstraintViolation<StudentCourses>> violations = validator.validate(course);
+
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).extracting("message")
+          .containsOnly("コース名を入力してください");
+    }
+
+    @Test
+    void 受講生詳細のコース情報の入力チェックのコース名の文字数チェックで掛かること() {
+      StudentCourses course = new StudentCourses(1, 1, "abcd-abcd-abcd-abcd-a", LocalDate.of(2025, 1, 1),
+          LocalDate.of(2026, 1, 1));
+
+      Set<ConstraintViolation<StudentCourses>> violations = validator.validate(course);
+
+      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).extracting("message")
+          .containsOnly("1文字以上20文字以下で入力してください");
     }
   }
 
@@ -241,17 +253,8 @@ class StudentControllerTest {
     }
   }
 
-  @Test
-  void 受講生ID検索で誤ったIDを渡してエラーレスポンスが返ってくること() throws Exception {
-    int studentId = 0;
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/student/{id}", studentId))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().string("リクエストが不正です"));
 
-    verify(service, times(0)).searchIdStudentInfo(studentId);
-  }
-  
   @Nested
   class エラー動作テスト {
 
@@ -318,6 +321,28 @@ class StudentControllerTest {
           .andExpect(status().isBadRequest());
 
       verify(service, times(0)).registerStudent(any(Student.class));
+    }
+
+    @Test
+    void 受講生ID検索で誤ったIDを渡してエラーメッセージが返ってくること() throws Exception {
+      int studentId = 0;
+
+      mockMvc.perform(MockMvcRequestBuilders.get("/student/{id}", studentId))
+          .andExpect(status().isBadRequest())
+          .andExpect(content().string("リクエストが不正です"));
+
+      verify(service, times(0)).searchIdStudentInfo(studentId);
+    }
+
+    @Test
+    void コース情報ID検索で誤ったIDを渡してエラーメッセージが返ってくること() throws Exception {
+      int courseId = 0;
+
+      mockMvc.perform(MockMvcRequestBuilders.get("/student/course/{id}", courseId))
+          .andExpect(status().isBadRequest())
+          .andExpect(content().string("リクエストが不正です"));
+
+      verify(service, times(0)).searchCourses(courseId);
     }
   }
 }
