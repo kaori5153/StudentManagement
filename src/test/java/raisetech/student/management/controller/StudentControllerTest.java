@@ -113,7 +113,8 @@ class StudentControllerTest {
 
     @Test
     void 受講生詳細のコース情報の入力チェックのコース名の文字数チェックで掛かること() {
-      StudentCourses course = new StudentCourses(1, 1, "abcd-abcd-abcd-abcd-a", LocalDate.of(2025, 1, 1),
+      StudentCourses course = new StudentCourses(1, 1, "abcd-abcd-abcd-abcd-a",
+          LocalDate.of(2025, 1, 1),
           LocalDate.of(2026, 1, 1));
 
       Set<ConstraintViolation<StudentCourses>> violations = validator.validate(course);
@@ -130,7 +131,8 @@ class StudentControllerTest {
     @Test
     void 受講生一覧検索が実行できて空のリストが返ってくること() throws Exception {
       mockMvc.perform(MockMvcRequestBuilders.get("/students"))//検証する内容。getの検証
-          .andExpect(status().isOk());
+          .andExpect(status().isOk())
+          .andExpect(content().json("[]"));
 
       verify(service, times(1)).searchStudentList();
     }
@@ -138,7 +140,8 @@ class StudentControllerTest {
     @Test
     void 受講生コース情報検索が実行できて空のリストが返ってくること() throws Exception {
       mockMvc.perform(MockMvcRequestBuilders.get("/students/courses"))
-          .andExpect(status().isOk());
+          .andExpect(status().isOk())
+          .andExpect(content().json("[]"));
 
       verify(service, times(1)).searchStudentsCourseList();
     }
@@ -252,7 +255,6 @@ class StudentControllerTest {
       verify(service, times(1)).updateStudentCourse(any(StudentCourses.class));
     }
   }
-
 
 
   @Nested
