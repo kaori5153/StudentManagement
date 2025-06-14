@@ -49,167 +49,117 @@ class StudentControllerTest {
   @Nested
   class バリデーションテスト {
 
-    static Stream<Arguments> studentData() {
+    static Stream<Arguments> validStudentData() {
       return Stream.of(
-          Arguments.of(1, "佐藤太郎", "さとうたろう", "taro@gmail.com", "東京都", 22, "男")
+          Arguments.of(Student.builder()
+              .id(1).name("佐藤太郎").furigana("さとうたろう")
+              .email("taro@gmail.com").area("東京都").age(22).gender("男")
+              .build()
+          )
       );
     }
 
-    static Stream<Arguments> courseData() {
+    @ParameterizedTest
+    @MethodSource("validStudentData")
+    void 受講生詳細の受講生で入力チェックに異常がないこと(Student student) throws Exception {
+      Set<ConstraintViolation<Student>> violations = validator.validate(student);
+      assertThat(violations.size()).isEqualTo(0);
+    }
+
+    static Stream<Arguments> invalidStudentData() {
       return Stream.of(
-          Arguments.of(1, 1, "Java")
+          Arguments.of(Student.builder()
+              .id(1).furigana("さとうたろう")
+              .email("taro@gmail.com").area("東京都").age(22).gender("男")
+              .build(), List.of("名前を入力してください")),
+          Arguments.of(Student.builder()
+              .id(1).name("a").furigana("さとうたろう")
+              .email("taro@gmail.com").area("東京都").age(22).gender("男")
+              .build(), List.of("2文字以上50文字以下で入力してください")),
+          Arguments.of(Student.builder()
+              .id(1).name("佐藤太郎").furigana("さとうたろう")
+              .area("東京都").age(22).gender("男")
+              .build(), List.of("メールアドレスを入力してください"))
       );
     }
 
     @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生詳細の受講生で入力チェックに異常がないこと(
-        int id, String name, String furigana, String email, String area, int age, String gender
-    ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .name(name)
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
+    @MethodSource("invalidStudentData")
+    void 受講生詳細の受講生で入力チェックに異常メッセージが返ってくること(Student student,
+        List<String> expectedMessages) {
       Set<ConstraintViolation<Student>> violations = validator.validate(student);
+      assertThat(violations).hasSize(expectedMessages.size());
+      assertThat(violations).extracting("message")
+          .containsExactlyInAnyOrderElementsOf(expectedMessages);
+    }
 
+    static Stream<Arguments> validStudentCourseData() {
+      return Stream.of(
+          Arguments.of(StudentCourses.builder()
+              .courseId(1).studentId(1).course("Java")
+              .build()
+          )
+      );
+    }
+
+    @ParameterizedTest
+    @MethodSource("validStudentCourseData")
+    void 受講生詳細のコース情報の入力チェックに異常がないこと(StudentCourses courseInfo)
+        throws Exception {
+      Set<ConstraintViolation<StudentCourses>> violations = validator.validate(courseInfo);
       assertThat(violations.size()).isEqualTo(0);
     }
 
-    @ParameterizedTest
-    @MethodSource("courseData")
-    void 受講生詳細のコース情報の入力チェックに異常がないこと(int courseId, int studentId,
-        String course) throws Exception {
-      StudentCourses courseInfo = StudentCourses.builder()
-          .courseId(courseId)
-          .studentId(studentId)
-          .course(course)
-          .build();
+    static Stream<Arguments> invalidStudentCourseData() {
+      return Stream.of(
+          Arguments.of(StudentCourses.builder()
+              .courseId(1).studentId(1)
+              .build(), List.of("コース名を入力してください")),
+          Arguments.of(StudentCourses.builder()
+              .courseId(1).studentId(1).course("abcd-abcd-abcd-abcd-a")
+              .build(), List.of("1文字以上20文字以下で入力してください"))
+      );
+    }
 
+    @ParameterizedTest
+    @MethodSource("invalidStudentCourseData")
+    void 受講生詳細のコース情報で入力チェックに異常メッセージが返ってくること(
+        StudentCourses courseInfo,
+        List<String> expectedMessages) {
       Set<ConstraintViolation<StudentCourses>> violations = validator.validate(courseInfo);
-
-      assertThat(violations.size()).isEqualTo(0);
-    }
-
-    @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生詳細の受講生の入力チェックで名前のnullチェックで掛かること(
-        int id, String name, String furigana, String email, String area, int age, String gender
-    ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      Set<ConstraintViolation<Student>> violations = validator.validate(student);
-
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).extracting("message").containsOnly("名前を入力してください");
-    }
-
-    @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生詳細の受講生の入力チェックで名前の文字数チェックで掛かること(
-        int id, String name, String furigana, String email, String area, int age, String gender
-    ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .name("a")
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      Set<ConstraintViolation<Student>> violations = validator.validate(student);
-
-      assertThat(violations.size()).isEqualTo(1);
+      assertThat(violations).hasSize(expectedMessages.size());
       assertThat(violations).extracting("message")
-          .containsOnly("2文字以上50文字以下で入力してください");
-    }
-
-    @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生詳細の受講生の入力チェックでメールアドレスのnullチェックで掛かること(
-        int id, String name, String furigana, String email, String area, int age, String gender
-    ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .name(name)
-          .furigana(furigana)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      Set<ConstraintViolation<Student>> violations = validator.validate(student);
-
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).extracting("message").containsOnly("メールアドレスを入力してください");
-    }
-
-    @ParameterizedTest
-    @MethodSource("courseData")
-    void 受講生詳細のコース情報の入力チェックのコース名のnullチェックで掛かること(
-        int courseId, int studentId, String course) throws Exception {
-      StudentCourses courseInfo = StudentCourses.builder()
-          .courseId(courseId)
-          .studentId(studentId)
-          .build();
-
-      Set<ConstraintViolation<StudentCourses>> violations = validator.validate(courseInfo);
-
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).extracting("message")
-          .containsOnly("コース名を入力してください");
-    }
-
-    @ParameterizedTest
-    @MethodSource("courseData")
-    void 受講生詳細のコース情報の入力チェックのコース名の文字数チェックで掛かること(
-        int courseId, int studentId, String course) throws Exception {
-      StudentCourses courseInfo = StudentCourses.builder()
-          .courseId(courseId)
-          .studentId(studentId)
-          .course("abcd-abcd-abcd-abcd-a")
-          .build();
-
-      Set<ConstraintViolation<StudentCourses>> violations = validator.validate(courseInfo);
-
-      assertThat(violations.size()).isEqualTo(1);
-      assertThat(violations).extracting("message")
-          .containsOnly("1文字以上20文字以下で入力してください");
+          .containsExactlyInAnyOrderElementsOf(expectedMessages);
     }
   }
 
   @Nested
   class 正常動作テスト {
 
-    static Stream<Arguments> studentData() {
+    static Stream<Arguments> validStudentDetailData() {
       return Stream.of(
-          Arguments.of(1, "佐藤太郎", "さとうたろう", "taro@gmail.com", "東京都", 22, "男")
+          Arguments.of(StudentDetail.builder()
+              .student(Student.builder()
+                  .id(1).name("佐藤太郎").furigana("さとうたろう")
+                  .email("taro@gmail.com").area("東京都").age(22).gender("男")
+                  .build())
+              .build()
+          )
       );
     }
 
-    static Stream<Arguments> courseData() {
+    static Stream<Arguments> validStudentCourseData() {
       return Stream.of(
-          Arguments.of(1, 1, "Java")
+          Arguments.of(StudentCourses.builder()
+              .courseId(1).studentId(1).course("Java")
+              .build()
+          )
       );
     }
 
     @Test
     void 受講生一覧検索が実行できて空のリストが返ってくること() throws Exception {
-      mockMvc.perform(MockMvcRequestBuilders.get("/students"))//検証する内容。getの検証
+      mockMvc.perform(MockMvcRequestBuilders.get("/students"))
           .andExpect(status().isOk())
           .andExpect(content().json("[]"));
 
@@ -226,26 +176,12 @@ class StudentControllerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生登録が実行できてレスポンスが返ってくること(int id, String name, String furigana,
-        String email, String area, int age, String gender
+    @MethodSource("validStudentDetailData")
+    void 受講生登録が実行できてレスポンスが返ってくること(StudentDetail studentDetail
     ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .name(name)
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      StudentDetail studentDetail = StudentDetail.builder()
-          .student(student).build();
-
       mockMvc.perform(MockMvcRequestBuilders.post("/student")
-              .contentType(MediaType.APPLICATION_JSON) // JSONを送信
-              .content(new ObjectMapper().writeValueAsString(studentDetail))) // JSONデータを追加
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(new ObjectMapper().writeValueAsString(studentDetail)))
           .andExpect(status().isOk())
           .andExpect(content().string("登録処理完了"));
 
@@ -253,15 +189,9 @@ class StudentControllerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("courseData")
+    @MethodSource("validStudentCourseData")
     void 受講生コース情報登録が実行できてレスポンスが返ってくること(
-        int courseId, int studentId, String course) throws Exception {
-      StudentCourses courseInfo = StudentCourses.builder()
-          .courseId(courseId)
-          .studentId(studentId)
-          .course(course)
-          .build();
-
+        StudentCourses courseInfo) throws Exception {
       List<StudentCourses> courses = List.of(courseInfo);
 
       StudentDetail studentDetail = StudentDetail.builder()
@@ -277,53 +207,27 @@ class StudentControllerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生ID検索が実行できて受講生情報が返ってくること(int id, String name, String furigana,
-        String email, String area, int age, String gender
+    @MethodSource("validStudentDetailData")
+    void 受講生ID検索が実行できて受講生情報が返ってくること(StudentDetail studentDetail
     ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .name(name)
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      StudentDetail studentDetail = StudentDetail.builder()
-          .student(student).build();
-
       when(service.searchIdStudentInfo(1)).thenReturn(studentDetail);
 
-      mockMvc.perform(MockMvcRequestBuilders.get("/student/{id}", id))
+      mockMvc.perform(
+              MockMvcRequestBuilders.get("/student/{id}", studentDetail.getStudent().getId()))
           .andExpect(status().isOk())
           .andExpect(content().json(new ObjectMapper().writeValueAsString(studentDetail)));
 
-      verify(service, times(1)).searchIdStudentInfo(id);
+      verify(service, times(1)).searchIdStudentInfo(studentDetail.getStudent().getId());
     }
 
     @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生情報の更新が実行できてレスポンスが返ってくること(
-        int id, String name, String furigana, String email, String area, int age, String gender
+    @MethodSource("validStudentDetailData")
+    void 受講生情報の更新が実行できてレスポンスが返ってくること(StudentDetail studentDetail
     ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .name(name)
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      StudentDetail studentDetail = StudentDetail.builder()
-          .student(student).build();
-
-      mockMvc.perform(MockMvcRequestBuilders.put("/student/{id}", id)
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(new ObjectMapper().writeValueAsString(studentDetail)))
+      mockMvc.perform(
+              MockMvcRequestBuilders.put("/student/{id}", studentDetail.getStudent().getId())
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(new ObjectMapper().writeValueAsString(studentDetail)))
           .andExpect(status().isOk())
           .andExpect(content().string("更新処理完了"));
 
@@ -331,35 +235,23 @@ class StudentControllerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("courseData")
+    @MethodSource("validStudentCourseData")
     void コース情報ID検索が実行できてコース情報が返ってくること(
-        int courseId, int studentId, String course) throws Exception {
-      StudentCourses courseInfo = StudentCourses.builder()
-          .courseId(courseId)
-          .studentId(studentId)
-          .course(course)
-          .build();
-
+        StudentCourses courseInfo) throws Exception {
       when(service.searchCourses(1)).thenReturn(courseInfo);
 
-      mockMvc.perform(MockMvcRequestBuilders.get("/student/course/{id}", courseId))
+      mockMvc.perform(MockMvcRequestBuilders.get("/student/course/{id}", courseInfo.getCourseId()))
           .andExpect(status().isOk())
           .andExpect(content().json(new ObjectMapper().writeValueAsString(courseInfo)));
 
-      verify(service, times(1)).searchCourses(courseId);
+      verify(service, times(1)).searchCourses(courseInfo.getCourseId());
     }
 
     @ParameterizedTest
-    @MethodSource("courseData")
+    @MethodSource("validStudentCourseData")
     void コース情報の更新が実行できてレスポンスが返ってくること(
-        int courseId, int studentId, String course) throws Exception {
-      StudentCourses courseInfo = StudentCourses.builder()
-          .courseId(courseId)
-          .studentId(studentId)
-          .course(course)
-          .build();
-
-      mockMvc.perform(MockMvcRequestBuilders.put("/student/course/{id}", courseId)
+        StudentCourses courseInfo) throws Exception {
+      mockMvc.perform(MockMvcRequestBuilders.put("/student/course/{id}", courseInfo.getCourseId())
               .contentType(MediaType.APPLICATION_JSON)
               .content(new ObjectMapper().writeValueAsString(courseInfo)))
           .andExpect(status().isOk())
@@ -373,86 +265,75 @@ class StudentControllerTest {
   @Nested
   class エラー動作テスト {
 
-    static Stream<Arguments> studentData() {
+    static Stream<Arguments> validStudentDetailData() {
       return Stream.of(
-          Arguments.of(1, "佐藤太郎", "さとうたろう", "taro@gmail.com", "東京都", 22, "男")
-      );
-    }
-
-    static Stream<Arguments> courseData() {
-      return Stream.of(
-          Arguments.of(1, 1, "Java")
+          Arguments.of(StudentDetail.builder()
+              .student(Student.builder()
+                  .id(1).name("佐藤太郎").furigana("さとうたろう")
+                  .email("taro@gmail.com").area("東京都").age(22).gender("男")
+                  .build())
+              .build()
+          )
       );
     }
 
     @ParameterizedTest
-    @MethodSource("studentData")
+    @MethodSource("validStudentDetailData")
     void 受講生情報の更新で誤ったidを入力したらエラーメッセージが返ってくること(
-        int id, String name, String furigana, String email, String area, int age, String gender
+        StudentDetail studentDetail
     ) throws Exception {
       int errId = 2;
 
-      Student student = Student.builder()
-          .id(id)
-          .name(name)
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      StudentDetail studentDetail = StudentDetail.builder()
-          .student(student).build();
-
       mockMvc.perform(MockMvcRequestBuilders.put("/student/{id}", errId)
-              .contentType(MediaType.APPLICATION_JSON) // JSONを送信
-              .content(new ObjectMapper().writeValueAsString(studentDetail))) // JSONデータを追加
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(new ObjectMapper().writeValueAsString(studentDetail)))
           .andExpect(status().isOk())
           .andExpect(content().string("受講生IDを正しく指定してください"));
 
       verify(service, times(0)).updateStudent(any(Student.class));
     }
 
+    static Stream<Arguments> validStudentCourseData() {
+      return Stream.of(
+          Arguments.of(StudentCourses.builder()
+              .courseId(1).studentId(1).course("Java")
+              .build()
+          )
+      );
+    }
+
     @ParameterizedTest
-    @MethodSource("courseData")
+    @MethodSource("validStudentCourseData")
     void コース情報の更新で誤ったidを入力したらエラーメッセージが返ってくること(
-        int courseId, int studentId, String course
+        StudentCourses courseInfo
     ) throws Exception {
       int errId = 2;
 
-      StudentCourses courseInfo = StudentCourses.builder()
-          .courseId(courseId)
-          .studentId(studentId)
-          .course(course)
-          .build();
-
       mockMvc.perform(MockMvcRequestBuilders.put("/student/course/{id}", errId)
-              .contentType(MediaType.APPLICATION_JSON) // JSONを送信
-              .content(new ObjectMapper().writeValueAsString(courseInfo))) // JSONデータを追加
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(new ObjectMapper().writeValueAsString(courseInfo)))
           .andExpect(status().isOk())
           .andExpect(content().string("コースIDを正しく指定してください"));
 
       verify(service, times(0)).updateStudentCourse(any(StudentCourses.class));
     }
 
+    static Stream<Arguments> invalidStudentDetailData() {
+      return Stream.of(
+          Arguments.of(StudentDetail.builder()
+              .student(Student.builder()
+                  .id(1).furigana("さとうたろう")
+                  .email("taro@gmail.com").area("東京都").age(22).gender("男")
+                  .build())
+              .build()
+          )
+      );
+    }
+
     @ParameterizedTest
-    @MethodSource("studentData")
-    void 受講生情報の名前にエラーがありBadRequestが返ってくること(
-        int id, String name, String furigana, String email, String area, int age, String gender
+    @MethodSource("invalidStudentDetailData")
+    void 受講生情報の名前にエラーがありBadRequestが返ってくること(StudentDetail studentDetail
     ) throws Exception {
-      Student student = Student.builder()
-          .id(id)
-          .furigana(furigana)
-          .email(email)
-          .area(area)
-          .age(age)
-          .gender(gender)
-          .build();
-
-      StudentDetail studentDetail = StudentDetail.builder()
-          .student(student).build();
-
       mockMvc.perform(MockMvcRequestBuilders.post("/student")
               .contentType(MediaType.APPLICATION_JSON)
               .content(new ObjectMapper().writeValueAsString(studentDetail)))
