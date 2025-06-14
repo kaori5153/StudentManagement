@@ -7,7 +7,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -194,11 +196,39 @@ class StudentControllerTest {
     }
 
     @Test
-    void 受講生ID検索が実行できてレスポンスが返ってくること() throws Exception {
+    void 受講生ID検索が実行できて受講生情報が返ってくること() throws Exception {
       int studentId = 1;
+      Student student = Student.builder()
+          .id(1)
+          .name("佐藤太郎")
+          .furigana("さとうたろう")
+          .nickname("たろう")
+          .email("taro@gmail.com")
+          .area("東京都")
+          .age(22)
+          .gender("男")
+          .build();
+
+      StudentDetail studentDetail = StudentDetail.builder()
+          .student(student).build();
+
+      when(service.searchIdStudentInfo(1)).thenReturn(studentDetail);
 
       mockMvc.perform(MockMvcRequestBuilders.get("/student/{id}", studentId))
-          .andExpect(status().isOk());
+          .andExpect(status().isOk())
+          .andExpect(content().json(
+              "{\"student\":"
+                  + "{\"id\":1,"
+                  + "\"name\":\"佐藤太郎\","
+                  + "\"furigana\":\"さとうたろう\","
+                  + "\"nickname\":\"たろう\","
+                  + "\"email\":\"taro@gmail.com\","
+                  + "\"area\":\"東京都\","
+                  + "\"age\":22,"
+                  + "\"gender\":\"男\","
+                  + "\"remark\":null,"
+                  + "\"deleted\":false},"
+                  + "\"studentCourses\":null}"));
 
       verify(service, times(1)).searchIdStudentInfo(studentId);
     }
@@ -229,11 +259,24 @@ class StudentControllerTest {
     }
 
     @Test
-    void コース情報ID検索が実行できてレスポンスが返ってくること() throws Exception {
+    void コース情報ID検索が実行できてコース情報が返ってくること() throws Exception {
       int courseId = 1;
+      StudentCourses course = StudentCourses.builder()
+          .courseId(1)
+          .studentId(1)
+          .course("Java")
+          .build();
+
+      when(service.searchCourses(1)).thenReturn(course);
 
       mockMvc.perform(MockMvcRequestBuilders.get("/student/course/{id}", courseId))
-          .andExpect(status().isOk());
+          .andExpect(status().isOk())
+          .andExpect(content().json("{"
+              + "\"courseId\":1,"
+              + "\"studentId\":1,"
+              + "\"course\":\"Java\","
+              + "\"startDate\":null,"
+              + "\"endDate\":null}"));
 
       verify(service, times(1)).searchCourses(courseId);
     }
