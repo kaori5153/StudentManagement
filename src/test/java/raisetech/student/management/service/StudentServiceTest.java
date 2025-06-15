@@ -42,8 +42,7 @@ class StudentServiceTest {
   void 受講生詳細の一覧検索_リポジトリとコンバーターの処理が適切に呼び出せていること() {
     List<Student> studentList = List.of(
         new Student(1, "佐藤太郎", "さとうたろう", "たろう", "taro@gmail.com", "東京都", 22, "男",
-            "", false)
-    );
+            "", false));
 
     List<StudentCourses> studentCourses = List.of(
         new StudentCourses(1, 1, "Java", LocalDate.of(2025, 1, 1), LocalDate.of(2026, 1, 1))
